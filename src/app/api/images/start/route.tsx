@@ -46,17 +46,9 @@ export async function GET(req: NextRequest) {
           alignItems: "stretch", // Stretch items to fill the container height
           width: "100%",
           height: "100vh", // Full viewport height
-          backgroundColor: "white",
+          backgroundColor: "#f4f8ff",
         }}
       >
-        <img
-          style={{
-            height: "100%", // Make image full height
-            objectFit: "cover", // Cover the area without losing aspect ratio
-            width: "20%", // Image takes up 40% of the container's width
-          }}
-          src="https://imagedelivery.net/BXluQx4ige9GuW0Ia56BHw/2639523a-690b-47af-16ab-ca07697fd000/original"
-        />
         <div
           style={{
             display: "flex",
@@ -74,8 +66,17 @@ export async function GET(req: NextRequest) {
         >
           <div
             style={{
+              fontSize: 48,
+              marginBottom: 12,
+              display: "flex",
+            }}
+          >
+            <strong>👀 testing 🪟</strong>
+          </div>
+          <div
+            style={{
               color: "#0a588c",
-              fontSize: 72,
+              fontSize: 48,
               marginBottom: 12,
               display: "flex",
             }}
