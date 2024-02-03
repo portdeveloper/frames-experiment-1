@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import Echo from "@/app/components/Echo";
 
-const postUrl = `${process.env["HOST"]}/api/echo`;
+const postUrl = `https://twelve-bugs-lick.loca.lt/api/echo`;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const imageUrl = `${process.env["HOST"]}/api/images/start?date=${Date.now()}`;
+  const imageUrl = `https://twelve-bugs-lick.loca.lt/api/images/start?date=${Date.now()}`;
   return {
     title: "Echo the Dolphin",
     description: "Type something and Echo will say it back!",

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ImageResponse } from "next/og";
 import { join } from "path";
 import * as fs from "fs";
@@ -9,10 +9,14 @@ let interReg = fs.readFileSync(interRegPath);
 const interBoldPath = join(process.cwd(), "public/Inter-Bold.ttf");
 let interBold = fs.readFileSync(interBoldPath);
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  console.log("searchParams", searchParams);
+  const ens = searchParams.get("ens") ?? "";
+
   return new ImageResponse(
     (
-<div
+      <div
         style={{
           display: "flex", // Use flex layout
           flexDirection: "row", // Align items horizontally
@@ -50,10 +54,10 @@ export async function GET() {
               color: "#0a588c",
               fontSize: 72,
               marginBottom: 12,
-              display: "flex"
+              display: "flex",
             }}
           >
-            <strong>Echo The Dolphin</strong>
+            <strong>Echo The {ens}</strong>
           </div>
           <div
             style={{
