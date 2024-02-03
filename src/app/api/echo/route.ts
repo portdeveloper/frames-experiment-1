@@ -4,7 +4,7 @@ import { getSSLHubRpcClient, Message } from "@farcaster/hub-nodejs";
 const HUB_URL = process.env["HUB_URL"] || "nemes.farcaster.xyz:2283";
 const hubClient = getSSLHubRpcClient(HUB_URL);
 
-const postUrl = `https://twelve-bugs-lick.loca.lt/api/code`;
+const postUrl = `${process.env["HOST"]}/api/code`;
 
 export async function POST(req: NextRequest) {
   const {
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     const message = inputText ?? "";
-    const imageUrl = `https://twelve-bugs-lick.loca.lt/api/images/echo?date=${Date.now()}&message=${message}`;
+    const imageUrl = `${process.env["HOST"]}/api/images/start?addyOrEns=${message}`;
     return new NextResponse(
       `<!DOCTYPE html>
       <html>
