@@ -4,12 +4,12 @@ import Echo from "@/app/components/Echo";
 const postUrl = `https://twelve-bugs-lick.loca.lt/api/echo`;
 
 export async function generateMetadata({
-  params: { ens },
+  params: { addy },
 }: {
-  params: { ens: string };
+  params: { addy: string };
 }): Promise<Metadata> {
-  console.log("ens is here ->>>>>", ens);
-  const imageUrl = `https://twelve-bugs-lick.loca.lt/api/images/start?ens=${ens}`;
+  console.log("addy is here ->>>>>", addy);
+  const imageUrl = `https://twelve-bugs-lick.loca.lt/api/images/start?addy=${addy}`;
 
   return {
     title: "Echo the ENS DOLPHIN",

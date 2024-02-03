@@ -12,7 +12,7 @@ let interBold = fs.readFileSync(interBoldPath);
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   console.log("searchParams", searchParams);
-  const ens = searchParams.get("ens") ?? "";
+  const addy = searchParams.get("addy") ?? "";
 
   return new ImageResponse(
     (
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
               display: "flex",
             }}
           >
-            <strong>Echo The {ens}</strong>
+            <strong>Echo The {addy}</strong>
           </div>
           <div
             style={{
