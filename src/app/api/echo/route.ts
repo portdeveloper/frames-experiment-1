@@ -4,7 +4,7 @@ import { getSSLHubRpcClient, Message } from "@farcaster/hub-nodejs";
 const HUB_URL = process.env["HUB_URL"] || "nemes.farcaster.xyz:2283";
 const hubClient = getSSLHubRpcClient(HUB_URL);
 
-const postUrl = `${process.env["HOST"]}/api/code`;
+const postUrl = `https://046e9d296f87b135a75090b63a3de42d.serveo.net/api/code`;
 
 export async function POST(req: NextRequest) {
   const {
@@ -18,12 +18,16 @@ export async function POST(req: NextRequest) {
 
     let urlBuffer = validMessage?.data?.frameActionBody?.url ?? [];
     const urlString = Buffer.from(urlBuffer).toString("utf-8");
-    if (!urlString.startsWith(process.env["HOST"] ?? "")) {
+    if (
+      !urlString.startsWith(
+        "https://046e9d296f87b135a75090b63a3de42d.serveo.net" ?? ""
+      )
+    ) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
     const message = inputText ?? "";
-    const imageUrl = `${process.env["HOST"]}/api/images/start?addyOrEns=${message}`;
+    const imageUrl = `https://046e9d296f87b135a75090b63a3de42d.serveo.net /api/images/start?addyOrEns=${message}`;
     return new NextResponse(
       `<!DOCTYPE html>
       <html>
