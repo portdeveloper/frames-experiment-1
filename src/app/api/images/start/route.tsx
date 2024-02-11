@@ -189,8 +189,8 @@ export async function GET(req: NextRequest) {
                 </div>
               </div>
             </div>
-            <div tw="bg-white text-4xl m-8 ml-0 h-[590px] w-[480px] overflow-hidden p-8 rounded-16 shadow-2xl flex flex-col items-center justify-center">
-              <div tw="flex flex-col items-center justify-center w-full ">
+            <div tw="bg-white text-4xl m-8 ml-0 h-[590px] w-[480px] overflow-hidden p-8 rounded-16 shadow-2xl flex flex-col ">
+              <div tw="flex flex-col w-full">
                 {/* Header */}
                 <div
                   style={{

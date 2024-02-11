@@ -4,7 +4,7 @@ import { getSSLHubRpcClient, Message } from "@farcaster/hub-nodejs";
 const HUB_URL = process.env["HUB_URL"] || "nemes.farcaster.xyz:2283";
 const hubClient = getSSLHubRpcClient(HUB_URL);
 
-const postUrl = `${process.env["HOST"]}/api/code`;
+const postUrl = `${process.env["HOST"]}/api/echo`;
 
 export async function POST(req: NextRequest) {
   const {
@@ -34,8 +34,11 @@ export async function POST(req: NextRequest) {
           <meta name="fc:frame" content="vNext" />
           <meta name="fc:frame:post_url" content="${postUrl}" />
           <meta name="fc:frame:image" content="${imageUrl}" />
-          <meta name="fc:frame:button:1" content="See code" />
-          <meta name="fc:frame:button:1:action" content="post_redirect" />
+          <meta name="fc:frame:input:text" content="Type an address or ENS..." />
+          <meta name="fc:frame:button:1" content="Search" />
+          <meta property="fc:frame:button:2" content="Go to 👀 address.vision" />
+          <meta property="fc:frame:button:2:action" content="link" />
+          <meta property="fc:frame:button:2:target" content="https://address.vision/${message}" />
         </head>
         <body/>
       </html>`,
