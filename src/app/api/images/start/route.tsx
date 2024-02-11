@@ -53,6 +53,41 @@ const getTokens = async (addy: Address) => {
   }
 };
 
+const getNfts = async (addy: Address) => {
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      "x-api-key": process.env["OPENSEA_API_KEY"] || "default-key",
+    },
+  };
+
+  try {
+    const response = await fetch(
+      `https://api.opensea.io/api/v2/chain/ethereum/account/${addy}/nfts`,
+      options
+    );
+    const data = await response.json();
+
+    if (data.nfts && data.nfts.length > 0) {
+      const nftData = [];
+      for (let i = 0; i < Math.min(4, data.nfts.length); i++) {
+        const nft = data.nfts[i];
+        if (nft.image_url && nft.identifier !== "0") {
+          nftData.push({
+            imageUrl: nft.image_url,
+            contract: nft.contract,
+            identifier: nft.identifier,
+          });
+        }
+      }
+      return nftData;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const addyOrEns = searchParams.get("addyOrEns") ?? "";
@@ -77,6 +112,7 @@ export async function GET(req: NextRequest) {
     ? `https://metadata.ens.domains/mainnet/avatar/${addyOrEns}`
     : blo(addyOrEns as Address);
   const tokens = await getTokens(addy); // Fetch token balances
+  const nfts = await getNfts(addy);
 
   const filteredTokens = tokens
     .slice(0, 10)
@@ -135,8 +171,22 @@ export async function GET(req: NextRequest) {
                 </div>
               </div>
 
-              <div tw="flex flex-col">
-                <div tw="bg-white text-4xl m-8 mt-0  p-12 h-[350px] rounded-16 shadow-2xl flex flex-col items-center justify-center"></div>
+              <div tw="bg-white text-4xl m-8 mt-0 p-12 h-[350px] rounded-16 shadow-2xl flex items-center justify-center">
+                <div
+                  style={{
+                    gap: "16px",
+                  }}
+                  tw="flex"
+                >
+                  {nfts?.map((nft) => (
+                    <img
+                      key={nft.imageUrl}
+                      src={nft.imageUrl}
+                      width={190}
+                      height={200}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
             <div tw="bg-white text-4xl m-8 ml-0 h-[590px] w-[480px] overflow-hidden p-8 rounded-16 shadow-2xl flex flex-col items-center justify-center">
