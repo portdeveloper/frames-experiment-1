@@ -27,7 +27,7 @@ let interReg = fs.readFileSync(interRegPath);
 const interBoldPath = join(process.cwd(), "public/Inter-Bold.ttf");
 let interBold = fs.readFileSync(interBoldPath);
 
-async function generateQRCodeBase64(data) {
+async function generateQRCodeBase64(data: Address) {
   try {
     return await QRCode.toDataURL(data);
   } catch (err) {
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  let qrCodeBase64 = await generateQRCodeBase64(addy);
+  let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
   const balance = await publicClient.getBalance({
     address: addy as Address,
   });
@@ -111,8 +111,8 @@ export async function GET(req: NextRequest) {
   const imageSrc = isEns
     ? `https://metadata.ens.domains/mainnet/avatar/${addyOrEns}`
     : blo(addyOrEns as Address);
-  const tokens = await getTokens(addy); // Fetch token balances
-  const nfts = await getNfts(addy);
+  const tokens = await getTokens(addy as Address); // Fetch token balances
+  const nfts = await getNfts(addy as Address);
 
   const filteredTokens = tokens
     .slice(0, 10)
