@@ -225,7 +225,7 @@ export async function GET(req: NextRequest) {
                     <span style={{ flex: 1 }}>
                       {truncateBalance(token.balance)}
                     </span>
-                    <span style={{ flex: 1 }}>≈${token.quote}</span>
+                    <span style={{ flex: 1 }}>≈{token.quote}</span>
                   </div>
                 ))}
               </div>
