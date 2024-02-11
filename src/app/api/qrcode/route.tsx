@@ -3,10 +3,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import QRCode from "qrcode";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function GET(req: NextApiRequest, res: NextApiResponse) {
   // Get the Ethereum address from the URL query parameter
   const { addy } = req.query;
 
