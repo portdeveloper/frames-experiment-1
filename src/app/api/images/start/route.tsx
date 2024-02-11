@@ -10,17 +10,48 @@ import {
   Address,
 } from "viem";
 import { mainnet } from "viem/chains";
+import QRCode from "qrcode";
+import { blo } from "blo";
+import { CovalentClient } from "@covalenthq/client-sdk";
 
 const publicClient = createPublicClient({
   chain: mainnet,
   transport: http(),
 });
 
+const client = new CovalentClient(process.env["COVALENT_API_KEY"] as string);
+
 const interRegPath = join(process.cwd(), "public/Inter-Regular.ttf");
 let interReg = fs.readFileSync(interRegPath);
 
 const interBoldPath = join(process.cwd(), "public/Inter-Bold.ttf");
 let interBold = fs.readFileSync(interBoldPath);
+
+async function generateQRCodeBase64(data) {
+  try {
+    return await QRCode.toDataURL(data);
+  } catch (err) {
+    console.error("Failed to generate QR code", err);
+    return "";
+  }
+}
+
+const getTokens = async (addy: Address) => {
+  const res = await client.BalanceService.getTokenBalancesForWalletAddress(
+    "eth-mainnet",
+    addy,
+    {
+      nft: false,
+      noSpam: true,
+    }
+  );
+  if (res.data && res.data.items) {
+    const filteredTokens = res.data.items
+      ? res.data.items.filter((token) => token.quote !== 0)
+      : [];
+    return filteredTokens;
+  }
+};
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -37,115 +68,117 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  let qrCodeBase64 = await generateQRCodeBase64(addy);
   const balance = await publicClient.getBalance({
     address: addy as Address,
   });
+  const isEns = addyOrEns.endsWith(".eth");
+  const imageSrc = isEns
+    ? `https://metadata.ens.domains/mainnet/avatar/${addyOrEns}`
+    : blo(addyOrEns as Address);
+  const tokens = await getTokens(addy); // Fetch token balances
+
+  const filteredTokens = tokens
+    .slice(0, 10)
+    .filter((t) => t.quote != null && t.quote.toFixed(0) !== "0");
+
+  const tokensInfo = filteredTokens.map((token) => ({
+    name: token.contract_ticker_symbol,
+    balance: formatTokenBalance(
+      token.balance as bigint,
+      token.contract_decimals
+    ),
+    quote: `$${Number(token.quote_rate).toFixed(2)}`, // Assuming quote_rate is available and represents the USD value
+  }));
+
+  console.log("tokensInfo", tokensInfo);
+
+  const truncateBalance = (balance) => {
+    const balanceStr = balance.toString();
+    return balanceStr.length > 8
+      ? `${balanceStr.substring(0, 8)}...`
+      : balanceStr;
+  };
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          display: "flex", // Use flex layout
-          flexDirection: "row", // Align items horizontally
-          alignItems: "stretch", // Stretch items to fill the container height
-          width: "100%",
-          height: "100vh", // Full viewport height
-          backgroundColor: "#f4f8ff",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            lineHeight: 1.2,
-            fontSize: 36,
-            color: "black",
-            flex: 1,
-            overflow: "hidden",
-          }}
-        >
+      <div style={{ display: "flex" }} tw="w-full h-full">
+        <div style={{ display: "flex" }} tw="flex-col flex-grow">
           <div
-            style={{
-              fontSize: 48,
-              marginBottom: 12,
-              display: "flex",
-              backgroundColor: "#fff",
-              padding: 24,
-            }}
+            style={{ display: "flex" }}
+            tw="max-h-[125px] bg-white p-4 items-center flex-grow "
           >
-            <strong>
-              <span
-                style={{
-                  marginRight: 12,
-                  fontSize: 54,
-                }}
-              >
-                👀
-              </span>{" "}
-              address.vision{" "}
-            </strong>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginLeft: 48,
-                fontSize: 36,
-                padding: 12,
-                paddingRight: 48,
-                paddingLeft: 48,
-                borderRadius: 999,
-                border: "1px solid #0a588c",
-                backgroundColor: "#f4f8ff",
-              }}
-            >
-              <div>{addy}</div>
+            <strong tw="text-5xl">👀 address.vision</strong>
+            <div tw="ml-12 text-4xl bg-blue-50 p-4 px-6 rounded-full border border-slate-300 ">
+              {addy}
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              padding: 24,
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "#ffffff",
-                borderRadius: "16px",
-                padding: "36px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                maxWidth: "500px",
-                lineHeight: "1.4",
-              }}
-            >
-              {/* Replace 'profilePic' with the path to the profile picture */}
-              {/* <img
-              // src={profilePic}
-              alt="profile"
-              style={{ width: "64px", height: "64px", borderRadius: "50%" }}
-            /> */}
-              <span
-                style={{
-                  marginTop: "12px",
-                  fontSize: "36px",
-                  fontWeight: "700",
-                }}
-              >
-                {addyOrEns}
-              </span>
-              <span
-                style={{
-                  marginTop: "4px",
-                  fontSize: "30px",
-                  fontWeight: "400",
-                }}
-              >
-                Balance: {Number(formatEther(balance)).toFixed(4)} ETH
-              </span>
+          <div tw="flex bg-blue-50 flex-grow justify-between pt-2">
+            <div tw="flex flex-col">
+              <div tw="flex">
+                <div tw="bg-white text-4xl m-8 p-8 h-[222px] rounded-16 shadow-2xl flex items-center justify-between ">
+                  <img
+                    src={imageSrc}
+                    width={150}
+                    height={150}
+                    tw="rounded-full"
+                  />
+                  <div tw="flex flex-col ml-8">
+                    <strong>{addyOrEns}</strong>
+                    <span tw="mt-2">
+                      Balance: {Number(formatEther(balance)).toFixed(4)} ETH
+                    </span>
+                  </div>
+                </div>
+                <div tw="bg-white text-4xl m-8 ml-0 p-8 h-[222px] rounded-16 shadow-2xl flex items-center justify-between ">
+                  <img src={qrCodeBase64} width={190} height={190} />
+                </div>
+              </div>
+
+              <div tw="flex flex-col">
+                <div tw="bg-white text-4xl m-8 mt-0  p-12 h-[350px] rounded-16 shadow-2xl flex flex-col items-center justify-center"></div>
+              </div>
+            </div>
+            <div tw="bg-white text-4xl m-8 ml-0 h-[590px] w-[480px] overflow-hidden p-8 rounded-16 shadow-2xl flex flex-col items-center justify-center">
+              <div tw="flex flex-col items-center justify-center w-full ">
+                {/* Header */}
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "space-around",
+                    padding: "10px 0",
+                    borderBottom: "2px solid #000",
+                  }}
+                >
+                  <span style={{ flex: 1, fontSize: "18px" }}>Token</span>
+                  <span style={{ flex: 1, fontSize: "18px" }}>Balance</span>
+                  <span style={{ flex: 1, fontSize: "18px" }}>
+                    Balance in USD
+                  </span>
+                </div>
+
+                {/* Rows */}
+                {tokensInfo.map((token, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      width: "100%",
+                      justifyContent: "space-around",
+                      padding: "10px 0",
+                      borderBottom: "1px solid #ddd",
+                      fontSize: "22px",
+                    }}
+                  >
+                    <span style={{ flex: 1 }}>{token.name}</span>
+                    <span style={{ flex: 1 }}>
+                      {truncateBalance(token.balance)}
+                    </span>
+                    <span style={{ flex: 1 }}>≈${token.quote}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -171,3 +204,10 @@ export async function GET(req: NextRequest) {
     }
   );
 }
+// This is a helper function similar to formatTokenBalance for API route context
+const formatTokenBalance = (balance: bigint, decimals: number) => {
+  const divisor = BigInt(Math.pow(10, decimals));
+  const integerPart = balance / divisor;
+  const fractionalPart = balance % divisor;
+  return `${integerPart}.${fractionalPart.toString().padStart(decimals, "0").slice(0, 2)}`;
+};

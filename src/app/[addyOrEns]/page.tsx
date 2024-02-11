@@ -1,14 +1,14 @@
 import { Metadata } from "next";
 import Echo from "@/app/components/Echo";
 
-const postUrl = `https://046e9d296f87b135a75090b63a3de42d.serveo.net/api/echo`;
+const postUrl = `${process.env["HOST"]}/api/echo`;
 
 export async function generateMetadata({
   params: { addyOrEns },
 }: {
   params: { addyOrEns: string };
 }): Promise<Metadata> {
-  const imageUrl = `https://046e9d296f87b135a75090b63a3de42d.serveo.net/api/images/start?addyOrEns=${addyOrEns}`;
+  const imageUrl = `${process.env["HOST"]}/api/images/start?addyOrEns=${addyOrEns}`;
 
   return {
     title: "Echo the ENS DOLPHIN",

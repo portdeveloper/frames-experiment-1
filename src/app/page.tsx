@@ -1,12 +1,12 @@
 import { Metadata } from "next";
 import Echo from "@/app/components/Echo";
 
-const postUrl = `https://046e9d296f87b135a75090b63a3de42d.serveo.net/api/echo`;
+const postUrl = `${process.env["HOST"]}/api/echo`;
 
 console.log("postUrl", postUrl);
 
 export async function generateMetadata(): Promise<Metadata> {
-  const imageUrl = `https://046e9d296f87b135a75090b63a3de42d.serveo.net/api/images/start?date=${Date.now()}`;
+  const imageUrl = `${process.env["HOST"]}/api/images/start?date=${Date.now()}`;
   return {
     title: "Echo the Dolphin",
     description: "Type something and Echo will say it back!",
