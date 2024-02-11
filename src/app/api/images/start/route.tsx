@@ -115,8 +115,10 @@ export async function GET(req: NextRequest) {
   const nfts = await getNfts(addy as Address);
 
   const filteredTokens = tokens
-    .slice(0, 10)
-    .filter((t) => t.quote != null && t.quote.toFixed(0) !== "0");
+    ? tokens
+        .slice(0, 10)
+        .filter((t) => t.quote != null && t.quote.toFixed(0) !== "0")
+    : [];
 
   const tokensInfo = filteredTokens.map((token) => ({
     name: token.contract_ticker_symbol,
@@ -129,7 +131,7 @@ export async function GET(req: NextRequest) {
 
   console.log("tokensInfo", tokensInfo);
 
-  const truncateBalance = (balance) => {
+  const truncateBalance = (balance: string) => {
     const balanceStr = balance.toString();
     return balanceStr.length > 8
       ? `${balanceStr.substring(0, 8)}...`
