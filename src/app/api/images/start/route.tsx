@@ -18,7 +18,7 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
-export const maxDuration = 20;
+export const maxDuration = 60;
 
 const client = new CovalentClient(process.env["COVALENT_API_KEY"] as string);
 
