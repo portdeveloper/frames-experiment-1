@@ -92,25 +92,25 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const addyOrEns = searchParams.get("addyOrEns") ?? "";
 
-  if (!addyOrEns) {
-    return new ImageResponse(<div>test</div>);
-  }
+  // if (!addyOrEns) {
+  //   return new ImageResponse(<div>test</div>);
+  // }
 
-  let addy;
-  if (!isAddress(addyOrEns)) {
-    addy = await publicClient.getEnsAddress({
-      name: normalize(addyOrEns),
-    });
-  }
+  // let addy;
+  // if (!isAddress(addyOrEns)) {
+  //   addy = await publicClient.getEnsAddress({
+  //     name: normalize(addyOrEns),
+  //   });
+  // }
 
   // let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
-  const balance = await publicClient.getBalance({
-    address: addy as Address,
-  });
-  const isEns = addyOrEns.endsWith(".eth");
-  const imageSrc = isEns
-    ? `https://metadata.ens.domains/mainnet/avatar/${addyOrEns}`
-    : blo(addyOrEns as Address);
+  // const balance = await publicClient.getBalance({
+  //   address: addy as Address,
+  // });
+  // const isEns = addyOrEns.endsWith(".eth");
+  // const imageSrc = isEns
+  //   ? `https://metadata.ens.domains/mainnet/avatar/${addyOrEns}`
+  //   : blo(addyOrEns as Address);
   // const tokens = await getTokens(addy as Address); // Fetch token balances
   // const nfts = await getNfts(addy as Address);
 
@@ -147,26 +147,26 @@ export async function GET(req: NextRequest) {
             tw="max-h-[125px] bg-white p-4 items-center flex-grow "
           >
             <strong tw="text-5xl">👀 address.vision</strong>
-            <div tw="ml-12 text-4xl bg-blue-50 p-4 px-6 rounded-full border border-slate-300 ">
+            {/* <div tw="ml-12 text-4xl bg-blue-50 p-4 px-6 rounded-full border border-slate-300 ">
               {addy}
-            </div>
+            </div> */}
           </div>
           <div tw="flex bg-blue-50 flex-grow justify-between pt-2">
             <div tw="flex flex-col">
               <div tw="flex">
                 <div tw="bg-white text-4xl m-8 p-8 h-[222px] rounded-16 shadow-2xl flex items-center justify-between ">
-                  <img
+                  {/* <img
                     src={imageSrc}
                     width={150}
                     height={150}
                     tw="rounded-full"
-                  />
-                  <div tw="flex flex-col ml-8">
+                  /> */}
+                  {/* <div tw="flex flex-col ml-8">
                     <strong>{addyOrEns}</strong>
                     <span tw="mt-2">
                       Balance: {Number(formatEther(balance)).toFixed(4)} ETH
                     </span>
-                  </div>
+                  </div> */}
                 </div>
                 <div tw="bg-white text-4xl m-8 ml-0 p-8 h-[222px] rounded-16 shadow-2xl flex items-center justify-between ">
                   {/* <img src={qrCodeBase64} width={190} height={190} /> */}
@@ -194,7 +194,7 @@ export async function GET(req: NextRequest) {
             <div tw="bg-white text-4xl m-8 ml-0 h-[590px] w-[480px] overflow-hidden p-8 rounded-16 shadow-2xl flex flex-col ">
               <div tw="flex flex-col w-full">
                 {/* Header */}
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     width: "100%",
@@ -208,7 +208,7 @@ export async function GET(req: NextRequest) {
                   <span style={{ flex: 1, fontSize: "18px" }}>
                     Balance in USD
                   </span>
-                </div>
+                </div> */}
 
                 {/* Rows */}
                 {/* {tokensInfo.map((token, index) => (
