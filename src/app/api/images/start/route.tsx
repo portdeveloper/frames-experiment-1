@@ -92,16 +92,16 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const addyOrEns = searchParams.get("addyOrEns") ?? "";
 
-  // if (!addyOrEns) {
-  //   return new ImageResponse(<div>test</div>);
-  // }
+  if (!addyOrEns) {
+    return new ImageResponse(<div>test</div>);
+  }
 
-  // let addy;
-  // if (!isAddress(addyOrEns)) {
-  //   addy = await publicClient.getEnsAddress({
-  //     name: normalize(addyOrEns),
-  //   });
-  // }
+  let addy;
+  if (!isAddress(addyOrEns)) {
+    addy = await publicClient.getEnsAddress({
+      name: normalize(addyOrEns),
+    });
+  }
 
   // let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
   // const balance = await publicClient.getBalance({
@@ -147,9 +147,9 @@ export async function GET(req: NextRequest) {
             tw="max-h-[125px] bg-white p-4 items-center flex-grow "
           >
             <strong tw="text-5xl">👀 address.vision</strong>
-            {/* <div tw="ml-12 text-4xl bg-blue-50 p-4 px-6 rounded-full border border-slate-300 ">
+            <div tw="ml-12 text-4xl bg-blue-50 p-4 px-6 rounded-full border border-slate-300 ">
               {addy}
-            </div> */}
+            </div>
           </div>
           <div tw="flex bg-blue-50 flex-grow justify-between pt-2">
             <div tw="flex flex-col">
