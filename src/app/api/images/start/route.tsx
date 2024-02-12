@@ -71,7 +71,7 @@ const getNfts = async (addy: Address) => {
 
     if (data.nfts && data.nfts.length > 0) {
       const nftData = [];
-      for (let i = 0; i < Math.min(1, data.nfts.length); i++) {
+      for (let i = 0; i < Math.min(4, data.nfts.length); i++) {
         const nft = data.nfts[i];
         if (nft.image_url && nft.identifier !== "0") {
           nftData.push({
