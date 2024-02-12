@@ -36,22 +36,22 @@ async function generateQRCodeBase64(data: Address) {
   }
 }
 
-const getTokens = async (addy: Address) => {
-  const res = await client.BalanceService.getTokenBalancesForWalletAddress(
-    "eth-mainnet",
-    addy,
-    {
-      nft: false,
-      noSpam: true,
-    }
-  );
-  if (res.data && res.data.items) {
-    const filteredTokens = res.data.items
-      ? res.data.items.filter((token) => token.quote !== 0)
-      : [];
-    return filteredTokens;
-  }
-};
+// const getTokens = async (addy: Address) => {
+//   const res = await client.BalanceService.getTokenBalancesForWalletAddress(
+//     "eth-mainnet",
+//     addy,
+//     {
+//       nft: false,
+//       noSpam: true,
+//     }
+//   );
+//   if (res.data && res.data.items) {
+//     const filteredTokens = res.data.items
+//       ? res.data.items.filter((token) => token.quote !== 0)
+//       : [];
+//     return filteredTokens;
+//   }
+// };
 
 // const getNfts = async (addy: Address) => {
 //   const options = {
@@ -111,25 +111,25 @@ export async function GET(req: NextRequest) {
   const imageSrc = isEns
     ? `https://metadata.ens.domains/mainnet/avatar/${addyOrEns}`
     : blo(addyOrEns as Address);
-  const tokens = await getTokens(addy as Address); // Fetch token balances
+  // const tokens = await getTokens(addy as Address); // Fetch token balances
   // const nfts = await getNfts(addy as Address);
 
-  const filteredTokens = tokens
-    ? tokens
-        .slice(0, 10)
-        .filter((t) => t.quote != null && t.quote.toFixed(0) !== "0")
-    : [];
+  // const filteredTokens = tokens
+  //   ? tokens
+  //       .slice(0, 10)
+  //       .filter((t) => t.quote != null && t.quote.toFixed(0) !== "0")
+  //   : [];
 
-  const tokensInfo = filteredTokens.map((token) => ({
-    name: token.contract_ticker_symbol,
-    balance: formatTokenBalance(
-      token.balance as bigint,
-      token.contract_decimals
-    ),
-    quote: `$${Number(token.quote_rate).toFixed(2)}`, // Assuming quote_rate is available and represents the USD value
-  }));
+  // const tokensInfo = filteredTokens.map((token) => ({
+  //   name: token.contract_ticker_symbol,
+  //   balance: formatTokenBalance(
+  //     token.balance as bigint,
+  //     token.contract_decimals
+  //   ),
+  //   quote: `$${Number(token.quote_rate).toFixed(2)}`, // Assuming quote_rate is available and represents the USD value
+  // }));
 
-  console.log("tokensInfo", tokensInfo);
+  // console.log("tokensInfo", tokensInfo);
 
   const truncateBalance = (balance: string) => {
     const balanceStr = balance.toString();
@@ -211,7 +211,7 @@ export async function GET(req: NextRequest) {
                 </div>
 
                 {/* Rows */}
-                {tokensInfo.map((token, index) => (
+                {/* {tokensInfo.map((token, index) => (
                   <div
                     key={index}
                     style={{
@@ -229,7 +229,7 @@ export async function GET(req: NextRequest) {
                     </span>
                     <span style={{ flex: 1 }}>≈{token.quote}</span>
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
