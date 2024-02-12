@@ -27,14 +27,14 @@ let interReg = fs.readFileSync(interRegPath);
 const interBoldPath = join(process.cwd(), "public/Inter-Bold.ttf");
 let interBold = fs.readFileSync(interBoldPath);
 
-// async function generateQRCodeBase64(data: Address) {
-//   try {
-//     return await QRCode.toDataURL(data);
-//   } catch (err) {
-//     console.error("Failed to generate QR code", err);
-//     return "";
-//   }
-// }
+async function generateQRCodeBase64(data: Address) {
+  try {
+    return await QRCode.toDataURL(data);
+  } catch (err) {
+    console.error("Failed to generate QR code", err);
+    return "";
+  }
+}
 
 // const getTokens = async (addy: Address) => {
 //   const res = await client.BalanceService.getTokenBalancesForWalletAddress(
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  // let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
+  let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
   // const balance = await publicClient.getBalance({
   //   address: addy as Address,
   // });
@@ -169,7 +169,7 @@ export async function GET(req: NextRequest) {
                   </div> */}
                 </div>
                 <div tw="bg-white text-4xl m-8 ml-0 p-8 h-[222px] rounded-16 shadow-2xl flex items-center justify-between ">
-                  {/* <img src={qrCodeBase64} width={190} height={190} /> */}
+                  <img src={qrCodeBase64} width={190} height={190} />
                 </div>
               </div>
 
