@@ -19,7 +19,7 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
-const client = new CovalentClient(process.env["COVALENT_API_KEY"] as string);
+// const client = new CovalentClient(process.env["COVALENT_API_KEY"] as string);
 
 const interRegPath = join(process.cwd(), "public/Inter-Regular.ttf");
 let interReg = fs.readFileSync(interRegPath);
@@ -27,14 +27,14 @@ let interReg = fs.readFileSync(interRegPath);
 const interBoldPath = join(process.cwd(), "public/Inter-Bold.ttf");
 let interBold = fs.readFileSync(interBoldPath);
 
-async function generateQRCodeBase64(data: Address) {
-  try {
-    return await QRCode.toDataURL(data);
-  } catch (err) {
-    console.error("Failed to generate QR code", err);
-    return "";
-  }
-}
+// async function generateQRCodeBase64(data: Address) {
+//   try {
+//     return await QRCode.toDataURL(data);
+//   } catch (err) {
+//     console.error("Failed to generate QR code", err);
+//     return "";
+//   }
+// }
 
 // const getTokens = async (addy: Address) => {
 //   const res = await client.BalanceService.getTokenBalancesForWalletAddress(
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
+  // let qrCodeBase64 = await generateQRCodeBase64(addy as Address);
   const balance = await publicClient.getBalance({
     address: addy as Address,
   });
@@ -131,12 +131,12 @@ export async function GET(req: NextRequest) {
 
   // console.log("tokensInfo", tokensInfo);
 
-  const truncateBalance = (balance: string) => {
-    const balanceStr = balance.toString();
-    return balanceStr.length > 8
-      ? `${balanceStr.substring(0, 8)}...`
-      : balanceStr;
-  };
+  // const truncateBalance = (balance: string) => {
+  //   const balanceStr = balance.toString();
+  //   return balanceStr.length > 8
+  //     ? `${balanceStr.substring(0, 8)}...`
+  //     : balanceStr;
+  // };
 
   return new ImageResponse(
     (
@@ -169,7 +169,7 @@ export async function GET(req: NextRequest) {
                   </div>
                 </div>
                 <div tw="bg-white text-4xl m-8 ml-0 p-8 h-[222px] rounded-16 shadow-2xl flex items-center justify-between ">
-                  <img src={qrCodeBase64} width={190} height={190} />
+                  {/* <img src={qrCodeBase64} width={190} height={190} /> */}
                 </div>
               </div>
 
@@ -256,10 +256,10 @@ export async function GET(req: NextRequest) {
     }
   );
 }
-// This is a helper function similar to formatTokenBalance for API route context
-const formatTokenBalance = (balance: bigint, decimals: number) => {
-  const divisor = BigInt(Math.pow(10, decimals));
-  const integerPart = balance / divisor;
-  const fractionalPart = balance % divisor;
-  return `${integerPart}.${fractionalPart.toString().padStart(decimals, "0").slice(0, 2)}`;
-};
+// // This is a helper function similar to formatTokenBalance for API route context
+// const formatTokenBalance = (balance: bigint, decimals: number) => {
+//   const divisor = BigInt(Math.pow(10, decimals));
+//   const integerPart = balance / divisor;
+//   const fractionalPart = balance % divisor;
+//   return `${integerPart}.${fractionalPart.toString().padStart(decimals, "0").slice(0, 2)}`;
+// };
