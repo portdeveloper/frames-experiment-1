@@ -18,6 +18,8 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
+export const maxDuration = 20;
+
 const client = new CovalentClient(process.env["COVALENT_API_KEY"] as string);
 
 const interRegPath = join(process.cwd(), "public/Inter-Regular.ttf");
