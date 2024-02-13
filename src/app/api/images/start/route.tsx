@@ -99,13 +99,13 @@ export async function GET(req: NextRequest) {
     return new ImageResponse(<div>test</div>);
   }
 
-  let addy = addyOrEns;
+  let addy: string | null = addyOrEns;
   if (!isAddress(addyOrEns)) {
     addy = await publicClient.getEnsAddress({ name: normalize(addyOrEns) });
     addy = addy ? addy.toString() : ""; // Ensure `addy` is a string after async call
   }
 
-  const formattedAddress = formatAddress(addy); // Now `addy` should be correctly formatted.
+  const formattedAddress = formatAddress(addy as Address); // Now `addy` should be correctly formatted.
 
   const balance = await publicClient.getBalance({
     address: addy as Address,
