@@ -23,7 +23,7 @@ export async function generateMetadata({
       "fc:frame:post_url": postUrl,
       "fc:frame:input:text": "Type address or ENS...",
       "fc:frame:button:1": "Search!",
-      "fc:frame:button:2": "Go to 👀 address.vision",
+      "fc:frame:button:2": "See on 👀 address.vision",
       "fc:frame:button:2:action": "link",
       "fc:frame:button:2:target": `https://address.vision/${addyOrEns}`,
     },
