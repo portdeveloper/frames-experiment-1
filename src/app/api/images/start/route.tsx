@@ -80,6 +80,17 @@ const getNfts = async (addy: Address) => {
   }
 };
 
+function formatAddress(address: Address) {
+  if (
+    typeof address === "string" &&
+    address.length > 26 &&
+    address.startsWith("0x")
+  ) {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  }
+  return address;
+}
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const addyOrEns = searchParams.get("addyOrEns") ?? "";
@@ -88,12 +99,13 @@ export async function GET(req: NextRequest) {
     return new ImageResponse(<div>test</div>);
   }
 
-  let addy;
+  let addy = addyOrEns;
   if (!isAddress(addyOrEns)) {
-    addy = await publicClient.getEnsAddress({
-      name: normalize(addyOrEns),
-    });
+    addy = await publicClient.getEnsAddress({ name: normalize(addyOrEns) });
+    addy = addy ? addy.toString() : ""; // Ensure `addy` is a string after async call
   }
+
+  const formattedAddress = formatAddress(addy); // Now `addy` should be correctly formatted.
 
   const balance = await publicClient.getBalance({
     address: addy as Address,
@@ -111,16 +123,20 @@ export async function GET(req: NextRequest) {
         .filter((t) => t.quote != null && t.quote.toFixed(0) !== "0")
     : [];
 
-  const tokensInfo = filteredTokens.map((token) => ({
-    name: token.contract_ticker_symbol,
-    balance: formatTokenBalance(
-      token.balance as bigint,
-      token.contract_decimals
-    ),
-    quote: `$${Number(token.quote_rate).toFixed(2)}`, // Assuming quote_rate is available and represents the USD value
-  }));
+  const tokensInfo = filteredTokens.map((token) => {
+    // Convert the balance to standard unit from its smallest unit
+    const balanceInStandardUnit =
+      Number(token.balance) / Math.pow(10, token.contract_decimals);
 
-  console.log("tokensInfo", tokensInfo);
+    // Calculate the USD value
+    const quoteInUSD = balanceInStandardUnit * Number(token.quote_rate);
+
+    return {
+      name: token.contract_ticker_symbol,
+      balance: balanceInStandardUnit.toFixed(4), // Adjust the number of decimal places as needed
+      quote: `$${quoteInUSD.toFixed(2)}`, // Format the USD value to a string with two decimal places
+    };
+  });
 
   const truncateBalance = (balance: string) => {
     const balanceStr = balance.toString();
@@ -153,7 +169,11 @@ export async function GET(req: NextRequest) {
                     tw="rounded-full"
                   />
                   <div tw="flex flex-col ml-8">
-                    <strong>{addyOrEns}</strong>
+                    <strong>
+                      {addyOrEns.endsWith(".eth")
+                        ? addyOrEns
+                        : formattedAddress}
+                    </strong>
                     <span tw="mt-2">
                       Balance: {Number(formatEther(balance)).toFixed(4)} ETH
                     </span>
